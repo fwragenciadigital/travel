@@ -7,7 +7,9 @@
     "plan": "node src/index.js --plan",
     "run": "node src/index.js --run",
     "run:headed": "node src/index.js --run --headed",
-    "tap:validate": "node src/tap-validate.js"
+    "tap:validate": "node src/tap-validate.js",
+    "tap:parse": "node src/tap-report.js",
+    "test": "node --test"
   },
   "dependencies": {
     "playwright": "^1.58.0"
