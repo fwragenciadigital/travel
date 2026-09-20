@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { loadConfig } from "./config.js";
 import { buildSearchPlan } from "./plan.js";
@@ -17,7 +18,9 @@ try {
   console.log(`Consultando TAP: ${query.origin} → ${query.destination}, ${query.departureDate} → ${query.returnDate}.`);
   console.log("O navegador ficará visível. Se a TAP solicitar CAPTCHA, resolva-o normalmente; o script não tenta contorná-lo.");
 
-  await page.goto(buildTapBookingUrl(query, config.passengers), { waitUntil: "domcontentloaded", timeout: 60000 });
+  await page.goto("https://www.flytap.com/en-it", { waitUntil: "domcontentloaded", timeout: 60000 });
+  await acceptCookieBanner(page);
+  await page.goto(buildTapBookingUrl(query, config.passengers, randomUUID()), { waitUntil: "domcontentloaded", timeout: 60000 });
   await waitForFlightSelection(page, "outbound");
   const outbound = await selectCheapestEconomy(page, query, config, "ida");
 
@@ -36,8 +39,18 @@ try {
 }
 
 async function waitForFlightSelection(page, direction) {
-  const expected = direction === "outbound" ? /select.*(outbound|departure)/i : /select.*return/i;
-  await page.waitForFunction((source) => new RegExp(source, "i").test(document.body.innerText), expected.source, { timeout: 60000 });
+  try {
+    if (direction === "outbound") {
+      await page.locator('button[aria-label^="Economy from"]').first().waitFor({ state: "visible", timeout: 60000 });
+      return;
+    }
+
+    await page.waitForFunction(() => /select.*return/i.test(document.body.innerText)
+      && document.querySelectorAll('button[aria-label^="Economy from"]').length > 0, undefined, { timeout: 60000 });
+  } catch (error) {
+    const diagnosticPath = await saveDiagnostic(page, direction);
+    throw new Error(`A TAP não abriu a seleção de ${direction === "outbound" ? "ida" : "volta"}. Diagnóstico salvo em ${diagnosticPath}. ${error.message}`);
+  }
 }
 
 async function selectCheapestEconomy(page, query, config, label) {
@@ -84,6 +97,29 @@ async function saveResult(result) {
   const outputPath = path.join(outputDirectory, `tap-scan-${timestamp}.json`);
   await fs.writeFile(outputPath, JSON.stringify(result, null, 2));
   return outputPath;
+}
+
+async function saveDiagnostic(page, direction) {
+  const outputDirectory = path.resolve("output");
+  await fs.mkdir(outputDirectory, { recursive: true });
+  const timestamp = new Date().toISOString().replaceAll(":", "-");
+  const baseName = `tap-scan-${direction}-diagnostic-${timestamp}`;
+  const jsonPath = path.join(outputDirectory, `${baseName}.json`);
+  await fs.writeFile(jsonPath, JSON.stringify({
+    capturedAt: new Date().toISOString(),
+    page: {
+      url: page.url(),
+      title: await page.title(),
+      text: (await page.locator("body").innerText().catch(() => "")).slice(0, 30000)
+    }
+  }, null, 2));
+  await page.screenshot({ path: path.join(outputDirectory, `${baseName}.png`), fullPage: true }).catch(() => {});
+  return jsonPath;
+}
+
+async function acceptCookieBanner(page) {
+  const buttons = page.getByRole("button", { name: /accept|aceitar|accetta|consenti/i });
+  if (await buttons.count()) await buttons.first().click({ timeout: 5000 }).catch(() => {});
 }
 
 async function loadPlaywright() {
