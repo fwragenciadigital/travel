@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { parseTapResults } from "../src/tap-results.js";
 import { parseTapReview } from "../src/tap-review.js";
+import { buildTapBookingUrl } from "../src/tap-url.js";
 
 const capture = {
   capturedAt: "2026-09-20T14:00:55.140Z",
@@ -39,4 +40,14 @@ test("interpreta o total final exibido na revisão da TAP", () => {
   assert.equal(report.total, 2658.32);
   assert.equal(report.originalTotal, 2678.32);
   assert.equal(report.displayedDiscount, 20);
+});
+
+test("monta a URL oficial TAP com passageiros e datas", () => {
+  const url = buildTapBookingUrl(capture.query, capture.passengers);
+  assert.match(url, /origin=FLR/);
+  assert.match(url, /destination=GRU/);
+  assert.match(url, /adt=2/);
+  assert.match(url, /chd=1/);
+  assert.match(url, /depDate=10.01.2027/);
+  assert.match(url, /retDate=19.02.2027/);
 });
