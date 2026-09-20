@@ -43,11 +43,12 @@ test("interpreta o total final exibido na revisão da TAP", () => {
 });
 
 test("monta a URL oficial TAP com passageiros e datas", () => {
-  const url = buildTapBookingUrl(capture.query, capture.passengers);
+  const url = buildTapBookingUrl(capture.query, capture.passengers, "test-correlation-id");
   assert.match(url, /origin=FLR/);
   assert.match(url, /destination=GRU/);
   assert.match(url, /adt=2/);
   assert.match(url, /chd=1/);
   assert.match(url, /depDate=10.01.2027/);
   assert.match(url, /retDate=19.02.2027/);
+  assert.match(url, /x_tap_correlationid=test-correlation-id/);
 });
