@@ -69,3 +69,13 @@ Depois que os conectores forem incluídos, cada resultado deverá seguir este fo
   "bookingUrl": "https://www.flytap.com/"
 }
 ```
+
+## TAP: interpretar uma captura validada
+
+Depois de gerar uma captura na página de resultados, extraia as opções econômicas da ida com até duas escalas:
+
+```bash
+npm run tap:parse -- output/tap-validation-AAAA-MM-DDTHH-MM-SS.json
+```
+
+O relatório é gravado em `output/`, ordenado pelo menor preço. A TAP solicita primeiro a escolha da ida; por isso o valor lido nesta etapa é da seleção de ida e nunca é apresentado como preço final de ida e volta.
