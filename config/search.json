@@ -1,0 +1,27 @@
+{
+  "tripName": "Brasil 2027",
+  "origins": ["FLR", "PSA"],
+  "destination": "GRU",
+  "departureWindow": {
+    "from": "2027-01-10",
+    "to": "2027-02-10"
+  },
+  "stayDays": {
+    "min": 40,
+    "max": 55
+  },
+  "passengers": {
+    "adults": 2,
+    "children": 1
+  },
+  "cabin": "economy",
+  "baggage": "cabin_only",
+  "maxStops": 2,
+  "scan": {
+    "departureStepDays": 5,
+    "stayLengths": [40, 47, 55],
+    "maxQueriesPerAirline": 12,
+    "minimumDelayMs": 20000
+  },
+  "airlines": ["iberia", "air-europa", "air-france", "klm", "tap", "latam", "lufthansa", "ita"]
+}
