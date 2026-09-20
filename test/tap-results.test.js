@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { parseTapResults } from "../src/tap-results.js";
+import { parseTapReview } from "../src/tap-review.js";
 
 const capture = {
   capturedAt: "2026-09-20T14:00:55.140Z",
@@ -24,4 +25,18 @@ test("interpreta, ordena e limita as opções econômicas TAP", () => {
   assert.equal(report.cheapestOption.economyPrice, 1739.35);
   assert.equal(report.options[1].availability, "last_seats");
   assert.equal(report.priceScope, "outbound-selection");
+});
+
+test("interpreta o total final exibido na revisão da TAP", () => {
+  const report = parseTapReview({
+    ...capture,
+    page: {
+      url: "https://booking.flytap.com/booking/review-your-trip",
+      text: "Total with login\n2.678,32 EUR\n2.658,32 EUR\nPrice Breakdown"
+    }
+  });
+
+  assert.equal(report.total, 2658.32);
+  assert.equal(report.originalTotal, 2678.32);
+  assert.equal(report.displayedDiscount, 20);
 });
