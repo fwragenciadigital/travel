@@ -27,7 +27,7 @@ export const airlines = {
     name: "TAP Air Portugal",
     code: "TP",
     bookingUrl: "https://www.flytap.com/",
-    status: "result_parser_ready"
+    status: "single_query_scan_ready"
   },
   latam: {
     name: "LATAM",
