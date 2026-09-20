@@ -1,4 +1,4 @@
-export function buildTapBookingUrl(query, passengers) {
+export function buildTapBookingUrl(query, passengers, correlationId) {
   const params = new URLSearchParams({
     origin: query.origin,
     destination: query.destination,
@@ -11,7 +11,9 @@ export function buildTapBookingUrl(query, passengers) {
     depDate: formatTapDate(query.departureDate),
     headerfooterhidden: "false",
     retDate: formatTapDate(query.returnDate),
-    x_tap_source: "WEB"
+    x_tap_source: "WEB",
+    x_tap_username: "",
+    x_tap_correlationid: correlationId
   });
   return `https://booking.flytap.com/booking/flights?${params}`;
 }
