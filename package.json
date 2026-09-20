@@ -9,6 +9,7 @@
     "run:headed": "node src/index.js --run --headed",
     "tap:validate": "node src/tap-validate.js",
     "tap:parse": "node src/tap-report.js",
+    "tap:scan": "node src/tap-scan.js",
     "test": "node --test"
   },
   "dependencies": {
