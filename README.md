@@ -79,3 +79,13 @@ npm run tap:parse -- output/tap-validation-AAAA-MM-DDTHH-MM-SS.json
 ```
 
 O relatório é gravado em `output/`, ordenado pelo menor preço. A TAP solicita primeiro a escolha da ida; por isso o valor lido nessa tela é da seleção de ida e nunca é apresentado como preço final de ida e volta. Se a captura for feita em `Review your trip`, o mesmo comando registra o total final exibido antes de dados de passageiros e pagamento.
+
+## TAP: consulta automática de uma viagem
+
+Para consultar automaticamente a primeira data planejada, o comando abaixo abre a TAP, escolhe a opção econômica elegível mais barata na ida e na volta e salva o total exibido na revisão da viagem:
+
+```bash
+npm run tap:scan
+```
+
+O navegador permanece visível. O script não faz login, não envia dados de passageiros, não segue para pagamento e não tenta contornar CAPTCHA. Execute uma consulta por vez; a ampliação para toda a grade só será feita após esta execução inicial ser validada.
