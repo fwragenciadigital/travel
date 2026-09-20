@@ -78,4 +78,4 @@ Depois de gerar uma captura na página de resultados, extraia as opções econô
 npm run tap:parse -- output/tap-validation-AAAA-MM-DDTHH-MM-SS.json
 ```
 
-O relatório é gravado em `output/`, ordenado pelo menor preço. A TAP solicita primeiro a escolha da ida; por isso o valor lido nesta etapa é da seleção de ida e nunca é apresentado como preço final de ida e volta.
+O relatório é gravado em `output/`, ordenado pelo menor preço. A TAP solicita primeiro a escolha da ida; por isso o valor lido nessa tela é da seleção de ida e nunca é apresentado como preço final de ida e volta. Se a captura for feita em `Review your trip`, o mesmo comando registra o total final exibido antes de dados de passageiros e pagamento.
